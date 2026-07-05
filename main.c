@@ -40,13 +40,23 @@ void print_board(int a_board[SIZE][SIZE]) {
     }
 }
 
+//Fonction pas terminé
 void move_left(int a_board[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            if (a_board[i][j] == 1) {
+                int target_col = i;
+                int target_row = j;
+            }
+        }
+    }
 
 }
 
 int main() {
     srand(time(NULL));
     int board[SIZE][SIZE];
+
 
     init_board(board);
     spawn_tile(board);
