@@ -1,6 +1,7 @@
 #define SIZE 4
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 //Fill the board with 0
 void init_board(int a_board[SIZE][SIZE]) {
@@ -13,7 +14,14 @@ void init_board(int a_board[SIZE][SIZE]) {
 
 //Choose a random tile and place it a 2
 void spawn_tile(int a_board[SIZE][SIZE]) {
+    int row_rand = rand() % SIZE;
+    int col_rand = rand() % SIZE;
 
+    while (a_board[row_rand][col_rand] != 0) {
+        row_rand = rand() % SIZE;
+        col_rand = rand() % SIZE;
+    }
+    a_board[row_rand][col_rand] = 2;
 }
 
 //Print the board
@@ -22,7 +30,7 @@ void print_board(int a_board[SIZE][SIZE]) {
     for (int i = 0; i < SIZE; i++) {
         printf(" ");
         for (int j = 0; j < SIZE; j++) {
-            printf("%c", a_board[i][j]);
+            printf("%d", a_board[i][j]);
             if (j == 3) {
                 continue;
             }
@@ -32,10 +40,16 @@ void print_board(int a_board[SIZE][SIZE]) {
     }
 }
 
+void move_left(int a_board[SIZE][SIZE]) {
+
+}
+
 int main() {
+    srand(time(NULL));
     int board[SIZE][SIZE];
 
     init_board(board);
-    //spawn_tile(board);
+    spawn_tile(board);
+    spawn_tile(board);
     print_board(board);
 }
