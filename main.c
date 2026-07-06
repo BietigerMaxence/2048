@@ -1,4 +1,5 @@
 #define SIZE 4
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -43,23 +44,37 @@ void print_board(int a_board[SIZE][SIZE]) {
 //Fonction pas terminé
 void move_left(int a_board[SIZE][SIZE]) {
     for (int i = 0; i < SIZE; i++) {
+        int target_col = 0;
+
         for (int j = 0; j < SIZE; j++) {
-            if (a_board[i][j] == 1) {
-                int target_col = i;
-                int target_row = j;
+            if (a_board[i][j] != 0) {
+                a_board[i][target_col] = a_board[i][j];
+
+                if (target_col != j) {
+                    a_board[i][j] = 0;
+                }
+
+                target_col++;
             }
         }
     }
-
 }
 
 int main() {
     srand(time(NULL));
-    int board[SIZE][SIZE];
+    int board[SIZE][SIZE] = {
+        {0, 2, 0, 4},
+        {0, 0, 2, 0},
+        {4, 0, 0, 2},
+        {0, 0, 0, 8}
+    };
 
 
-    init_board(board);
-    spawn_tile(board);
-    spawn_tile(board);
+    //init_board(board);
+    //spawn_tile(board);
+    //spawn_tile(board);
+
+    print_board(board);
+    move_left(board);
     print_board(board);
 }
