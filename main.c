@@ -41,7 +41,22 @@ void print_board(int a_board[SIZE][SIZE]) {
     }
 }
 
-//Fonction pas terminé
+//return "true" if boards are equal
+bool boards_are_equal(int a[SIZE][SIZE], int b[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            if (a[i][j] != b[i][j]) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+
+//LEFT FUNCTIONS
+
+//Move every element to the left
 void move_left(int a_board[SIZE][SIZE]) {
     for (int i = 0; i < SIZE; i++) {
         int target_col = 0;
@@ -60,21 +75,36 @@ void move_left(int a_board[SIZE][SIZE]) {
     }
 }
 
+//Merge elements together only if they have the same value and different from 0
 void merge_left(int a_board[SIZE][SIZE]) {
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE - 1; j++) {
             if (a_board[i][j] == a_board[i][j+1] && a_board[i][j] != 0) {
-                a_board[i][j] += a_board[i][j+1]; a_board[i][j+1] = 0;
+                a_board[i][j] += a_board[i][j+1];
+                a_board[i][j+1] = 0;
             }
         }
     }
 }
 
-void play_left(int a_board[SIZE][SIZE]) {
+//Groups "left" functions
+bool play_left(int a_board[SIZE][SIZE]) {
+    int temp_board[SIZE][SIZE];
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            temp_board[i][j] = a_board[i][j];
+        }
+    }
     move_left(a_board);
     merge_left(a_board);
     move_left(a_board);
+    if (boards_are_equal(temp_board,a_board) == false) {
+        return true;
+    }else {
+        return false;
+    }
 }
+
 
 int main() {
     srand(time(NULL));
@@ -85,19 +115,16 @@ int main() {
         {4, 4, 8, 8}  // Attendu 8, 16, 0, 0
     };
 
-    int board1[SIZE][SIZE] = {
-        {2, 2, 4, 0}, // Attendu 4, 4, 0, 0
-        {4, 4, 4, 0}, // Attendu 8, 4, 0, 0
-        {2, 4, 4, 4}, // Attendu 2, 8, 4, 0
-        {0, 0, 0, 0}  // Attendu 0, 0 0, 0
-    };
-
     //init_board(board);
     //spawn_tile(board);
     //spawn_tile(board);
 
+    printf("Premier affichage\n");
     print_board(board);
-    play_left(board);
-    print_board(board);
+    printf("Deuxieme affichage\n");
+    if (play_left(board)) {
+        spawn_tile(board);
+        print_board(board);
+    }
     return 0;
 }
