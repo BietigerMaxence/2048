@@ -77,7 +77,60 @@ void print_board(int a_board[SIZE][SIZE]) {
 
 //--------------------------------------END VOID FUNCTIONS--------------------------------------
 
+//--------------------------------------RIGHT FUNCTIONS--------------------------------------
 
+//Move every element to the right
+void move_right(int a_board[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        int target_col = 3;
+
+        for (int j = SIZE - 1; j > 0; j--) {
+            if (a_board[i][j] != 0) {
+                a_board[i][target_col] = a_board[i][j];
+
+                if (target_col != j) {
+                    a_board[i][j] = 0;
+                }
+                target_col--;
+            }
+        }
+    }
+}
+
+//Merge elements to the tight together only if they have the same value and different from 0
+void merge_right(int a_board[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = SIZE - 1; j > 0; j--) {
+            if (a_board[i][j] == a_board[i][j-1] && a_board[i][j] != 0) {
+                a_board[i][j] += a_board[i][j-1];
+                a_board[i][j-1] = 0;
+            }
+        }
+    }
+}
+
+//Groups "right" functions
+bool play_right(int a_board[SIZE][SIZE]) {
+    int temp_board[SIZE][SIZE];
+
+    //Copy board passed as parameter to a temporary board, to compare it after
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            temp_board[i][j] = a_board[i][j];
+        }
+    }
+    move_right(a_board);
+    merge_right(a_board);
+    move_right(a_board);
+
+    //Verify is the board as changed
+    if (boards_are_equal(temp_board,a_board) == false) {
+        return true;
+    }else {
+        return false;
+    }
+}
+//--------------------------------------END RIGHT FUNCTIONS--------------------------------------
 
 //--------------------------------------LEFT FUNCTIONS--------------------------------------
 
@@ -100,7 +153,7 @@ void move_left(int a_board[SIZE][SIZE]) {
     }
 }
 
-//Merge elements together only if they have the same value and different from 0
+//Merge elements to the left together only if they have the same value and different from 0
 void merge_left(int a_board[SIZE][SIZE]) {
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE - 1; j++) {
@@ -115,6 +168,8 @@ void merge_left(int a_board[SIZE][SIZE]) {
 //Groups "left" functions
 bool play_left(int a_board[SIZE][SIZE]) {
     int temp_board[SIZE][SIZE];
+
+    //Copy board passed as parameter to a temporary board, to compare it after
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
             temp_board[i][j] = a_board[i][j];
@@ -123,6 +178,8 @@ bool play_left(int a_board[SIZE][SIZE]) {
     move_left(a_board);
     merge_left(a_board);
     move_left(a_board);
+
+    //Verify is the board as changed
     if (boards_are_equal(temp_board,a_board) == false) {
         return true;
     }else {
@@ -134,11 +191,18 @@ bool play_left(int a_board[SIZE][SIZE]) {
 
 int main() {
     srand(time(NULL));
-    int board[SIZE][SIZE] = {
+    int board_left[SIZE][SIZE] = {
         {0, 2, 2, 2}, // Attendu 4, 2, 0, 0
         {2, 0, 0, 2}, // Attendu 4, 0, 0, 0
         {2, 2, 2, 2}, // Attendu 4, 4, 0, 0
         {4, 4, 8, 8}  // Attendu 8, 16, 0, 0
+    };
+
+    int board_right[SIZE][SIZE] = {
+        {0, 2, 2, 2},   // attendu après droite : 0, 0, 2, 4
+        {2, 0, 0, 2},   // attendu : 0, 0, 0, 4
+        {2, 2, 2, 2},   // attendu : 0, 0, 4, 4
+        {4, 4, 8, 8}    // attendu : 0, 0, 8, 16
     };
 
 
@@ -155,11 +219,11 @@ int main() {
 
 
     printf("Premier affichage\n");
-    print_board(board_full);
+    print_board(board_right);
     printf("Deuxieme affichage\n");
-    if (play_left(board_full)) {
-        spawn_tile(board_full);
-        print_board(board_full);
+    if (play_right(board_right)) {
+        //spawn_tile(board_right);
+        print_board(board_right);
     }else {
         printf("Aucun mouvement vers la gauche\n");
     }
