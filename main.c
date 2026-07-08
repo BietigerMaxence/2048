@@ -70,6 +70,12 @@ void merge_left(int a_board[SIZE][SIZE]) {
     }
 }
 
+void play_left(int a_board[SIZE][SIZE]) {
+    move_left(a_board);
+    merge_left(a_board);
+    move_left(a_board);
+}
+
 int main() {
     srand(time(NULL));
     int board[SIZE][SIZE] = {
@@ -90,17 +96,8 @@ int main() {
     //spawn_tile(board);
     //spawn_tile(board);
 
-    printf("board\n");
     print_board(board);
-    move_left(board);
-    merge_left(board);
-    move_left(board);
+    play_left(board);
     print_board(board);
-
-    printf("board1\n");
-    print_board(board1);
-    move_left(board1);
-    merge_left(board1);
-    move_left(board1);
-    print_board(board1);
+    return 0;
 }
