@@ -62,11 +62,9 @@ void move_left(int a_board[SIZE][SIZE]) {
 
 void merge_left(int a_board[SIZE][SIZE]) {
     for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE - 2; j++) {
+        for (int j = 0; j < SIZE - 1; j++) {
             if (a_board[i][j] == a_board[i][j+1] && a_board[i][j] != 0) {
-                a_board[i][j] += a_board[i][j+1];
-                a_board[i][j+1] = 0;
-
+                a_board[i][j] += a_board[i][j+1]; a_board[i][j+1] = 0;
             }
         }
     }
