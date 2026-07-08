@@ -4,6 +4,37 @@
 #include <stdlib.h>
 #include <time.h>
 
+//--------------------------------------BOOL FUNCTIONS--------------------------------------
+
+//return "true" if boards are equal
+bool boards_are_equal(int a[SIZE][SIZE], int b[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            if (a[i][j] != b[i][j]) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+//Return true if a tile equal 0
+bool has_empty_tile(int a_board[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            if (a_board[i][j] == 0) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+//--------------------------------------END BOOL FUNCTIONS--------------------------------------
+
+
+//--------------------------------------VOID FUNCTIONS--------------------------------------
+
 //Fill the board with 0
 void init_board(int a_board[SIZE][SIZE]) {
     for (int i = 0; i < SIZE; i++) {
@@ -15,14 +46,17 @@ void init_board(int a_board[SIZE][SIZE]) {
 
 //Choose a random tile and place it a 2
 void spawn_tile(int a_board[SIZE][SIZE]) {
-    int row_rand = rand() % SIZE;
-    int col_rand = rand() % SIZE;
+    if (has_empty_tile(a_board)) {
+        int row_rand = rand() % SIZE;
+        int col_rand = rand() % SIZE;
 
-    while (a_board[row_rand][col_rand] != 0) {
-        row_rand = rand() % SIZE;
-        col_rand = rand() % SIZE;
+        while (a_board[row_rand][col_rand] != 0) {
+            row_rand = rand() % SIZE;
+            col_rand = rand() % SIZE;
+        }
+        a_board[row_rand][col_rand] = 2;
     }
-    a_board[row_rand][col_rand] = 2;
+
 }
 
 //Print the board
@@ -41,20 +75,11 @@ void print_board(int a_board[SIZE][SIZE]) {
     }
 }
 
-//return "true" if boards are equal
-bool boards_are_equal(int a[SIZE][SIZE], int b[SIZE][SIZE]) {
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            if (a[i][j] != b[i][j]) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
+//--------------------------------------END VOID FUNCTIONS--------------------------------------
 
 
-//LEFT FUNCTIONS
+
+//--------------------------------------LEFT FUNCTIONS--------------------------------------
 
 //Move every element to the left
 void move_left(int a_board[SIZE][SIZE]) {
@@ -105,6 +130,7 @@ bool play_left(int a_board[SIZE][SIZE]) {
     }
 }
 
+//--------------------------------------END LEFT FUNCTIONS--------------------------------------
 
 int main() {
     srand(time(NULL));
@@ -115,16 +141,32 @@ int main() {
         {4, 4, 8, 8}  // Attendu 8, 16, 0, 0
     };
 
+
+    int board_full[SIZE][SIZE] = {
+        {2, 4, 8, 16},
+        {4, 8, 16, 32},
+        {8, 16, 32, 64},
+        {16, 32, 64, 128}
+    };
+
     //init_board(board);
     //spawn_tile(board);
     //spawn_tile(board);
 
+
     printf("Premier affichage\n");
-    print_board(board);
+    print_board(board_full);
     printf("Deuxieme affichage\n");
-    if (play_left(board)) {
-        spawn_tile(board);
-        print_board(board);
+    if (play_left(board_full)) {
+        spawn_tile(board_full);
+        print_board(board_full);
+    }else {
+        printf("Aucun mouvement vers la gauche\n");
     }
+
+    /*
+    bool empty = has_empty_tile(board_full);
+    printf("%d ", empty);
+    */
     return 0;
 }
