@@ -390,10 +390,10 @@ int main() {
                         if (play_right(board)) {
                             spawn_tile(board);
                             print_board(board);
-                            continue;
+                            break;
                         }else {
                             printf("No movement to the right\n");
-                            continue;
+                            break;
                         }
                 }
             }else {
