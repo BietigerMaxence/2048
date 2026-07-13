@@ -1,4 +1,5 @@
 #define SIZE 4
+#include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -66,12 +67,20 @@ void print_board(int a_board[SIZE][SIZE]) {
         printf(" ");
         for (int j = 0; j < SIZE; j++) {
             printf("%d", a_board[i][j]);
-            if (j == 3) {
+            if (j == SIZE - 1) {
                 continue;
             }
             printf(" | ");
         }
         printf("\n---+---+---+---\n");
+    }
+}
+
+void copy_board(int source[SIZE][SIZE], int destination[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            destination[i][j] = source[i][j];
+        }
     }
 }
 
@@ -114,11 +123,8 @@ bool play_right(int a_board[SIZE][SIZE]) {
     int temp_board[SIZE][SIZE];
 
     //Copy board passed as parameter to a temporary board, to compare it after
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            temp_board[i][j] = a_board[i][j];
-        }
-    }
+    copy_board(a_board, temp_board);
+
     move_right(a_board);
     merge_right(a_board);
     move_right(a_board);
@@ -170,11 +176,8 @@ bool play_left(int a_board[SIZE][SIZE]) {
     int temp_board[SIZE][SIZE];
 
     //Copy board passed as parameter to a temporary board, to compare it after
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            temp_board[i][j] = a_board[i][j];
-        }
-    }
+    copy_board(a_board, temp_board);
+
     move_left(a_board);
     merge_left(a_board);
     move_left(a_board);
@@ -228,11 +231,8 @@ bool play_up(int a_board[SIZE][SIZE]) {
     int temp_board[SIZE][SIZE];
 
     //Copy board passed as parameter to a temporary board, to compare it after
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            temp_board[i][j] = a_board[i][j];
-        }
-    }
+    copy_board(a_board, temp_board);
+
     move_up(a_board);
     merge_up(a_board);
     move_up(a_board);
@@ -286,11 +286,8 @@ bool play_down(int a_board[SIZE][SIZE]) {
     int temp_board[SIZE][SIZE];
 
     //Copy board passed as parameter to a temporary board, to compare it after
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            temp_board[i][j] = a_board[i][j];
-        }
-    }
+    copy_board(a_board, temp_board);
+
     move_down(a_board);
     merge_down(a_board);
     move_down(a_board);
@@ -307,67 +304,72 @@ bool play_down(int a_board[SIZE][SIZE]) {
 
 int main() {
     srand(time(NULL));
-    int board_left[SIZE][SIZE] = {
-        {0, 2, 2, 2}, // Attendu 4, 2, 0, 0
-        {2, 0, 0, 2}, // Attendu 4, 0, 0, 0
-        {2, 2, 2, 2}, // Attendu 4, 4, 0, 0
-        {4, 4, 8, 8}  // Attendu 8, 16, 0, 0
-    };
 
-    int board_right[SIZE][SIZE] = {
-        {0, 2, 2, 2},   // attendu après droite : 0, 0, 2, 4
-        {2, 0, 0, 2},   // attendu : 0, 0, 0, 4
-        {2, 2, 2, 2},   // attendu : 0, 0, 4, 4
-        {4, 4, 8, 8}    // attendu : 0, 0, 8, 16
-    };
+    int board[SIZE][SIZE];
+    char direction;
 
 
-    int board_full[SIZE][SIZE] = {
-        {2, 4, 8, 16},
-        {4, 8, 16, 32},
-        {8, 16, 32, 64},
-        {16, 32, 64, 128}
-    };
+    init_board(board);
+    spawn_tile(board);
+    spawn_tile(board);
 
-    int board_up[SIZE][SIZE] = {
-        {2, 8, 0, 0},
-        {2, 8, 4, 2},
-        {4, 0, 4, 0},
-        {4, 0, 8, 2}
-    };
+    print_board(board);
 
-    int board_down[SIZE][SIZE] = {
-        {2, 8, 0, 0}, // 0, 0, 0, 0
-        {2, 8, 4, 2}, // 0, 0, 0, 0
-        {4, 0, 4, 0}, // 4, 0, 8, 0
-        {4, 0, 8, 2}  // 8, 16, 8, 4
-    };
-
-    printf("----board_full----\n");
-    printf("Premier affichage\n");
-    print_board(board_full);
-    printf("Deuxieme affichage\n");
-    if (play_down(board_full)) {
-        spawn_tile(board_full);
-        print_board(board_full);
-    }else {
-        printf("Aucun mouvement vers le haut\n");
+    while (true) {
+        if (scanf(" %c", &direction) == 1) {// NOLINT(cert-err34-c)
+            direction = tolower(direction);
+            if (direction == 'z' || direction == 'q' || direction == 's' || direction == 'd') {
+                switch (direction) {
+                    case 'z':
+                        if (play_up(board)) {
+                            spawn_tile(board);
+                            print_board(board);
+                            continue;
+                        }else {
+                            printf("No movement to the top\n");
+                            continue;
+                        }
+                    case 'q':
+                        if (play_left(board)) {
+                            spawn_tile(board);
+                            print_board(board);
+                            continue;
+                        }else {
+                            printf("No movement to the left\n");
+                            continue;
+                        }
+                    case 's':
+                        if (play_down(board)) {
+                            spawn_tile(board);
+                            print_board(board);
+                            continue;
+                        }else {
+                            printf("No movement to the bottom\n");
+                            continue;
+                        }
+                    case 'd':
+                        if (play_right(board)) {
+                            spawn_tile(board);
+                            print_board(board);
+                            continue;
+                        }else {
+                            printf("No movement to the right\n");
+                            continue;
+                        }
+                }
+            }else {
+                printf("Invalid direction, please choose another one:\n");
+                int c;
+                while ((c = getchar()) != '\n' && c != EOF) { }
+                continue;
+            }
+        }else {
+            printf("Invalid character, please choose another one:\n");
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF) { }
+            continue;
+        }
     }
-
-    printf("----board_down----\n");
-    printf("Premier affichage\n");
-    print_board(board_down);
-    printf("Deuxieme affichage\n");
-    if (play_down(board_down)) {
-        spawn_tile(board_down);
-        print_board(board_down);
-    }else {
-        printf("Aucun mouvement vers le haut\n");
-    }
-
-    //init_board(board);
-    //spawn_tile(board);
-    //spawn_tile(board);
 
     return 0;
 }
