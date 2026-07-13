@@ -245,9 +245,65 @@ bool play_up(int a_board[SIZE][SIZE]) {
     }
 }
 
-
-
 //--------------------------------------END UP FUNCTIONS--------------------------------------
+
+
+//--------------------------------------DOWN FUNCTIONS--------------------------------------
+
+// move every element to the down
+void move_down(int a_board[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        int target_row = SIZE - 1;
+
+        for (int j = SIZE - 1; j > - 1; j--) {
+            if (a_board[j][i] != 0) {
+                a_board[target_row][i] = a_board[j][i];
+
+                if (target_row != j) {
+                    a_board[j][i] = 0;
+                }
+
+                target_row--;
+            }
+        }
+    }
+}
+
+//Merge elements to the down together only if they have the same value and different from 0
+void merge_down(int a_board[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = SIZE - 1; j > 0; j--) {
+            if (a_board[j][i] == a_board[j-1][i] && a_board[j][i] != 0) {
+                a_board[j][i] += a_board[j-1][i];
+                a_board[j-1][i] = 0;
+            }
+        }
+    }
+}
+
+//Groups "down" functions
+bool play_down(int a_board[SIZE][SIZE]) {
+    int temp_board[SIZE][SIZE];
+
+    //Copy board passed as parameter to a temporary board, to compare it after
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            temp_board[i][j] = a_board[i][j];
+        }
+    }
+    move_down(a_board);
+    merge_down(a_board);
+    move_down(a_board);
+
+    //Verify is the board as changed
+    if (boards_are_equal(temp_board,a_board) == false) {
+        return true;
+    }else {
+        return false;
+    }
+}
+
+//--------------------------------------END DOWN FUNCTIONS--------------------------------------
 
 int main() {
     srand(time(NULL));
@@ -280,39 +336,34 @@ int main() {
         {4, 0, 8, 2}
     };
 
+    int board_down[SIZE][SIZE] = {
+        {2, 8, 0, 0}, // 0, 0, 0, 0
+        {2, 8, 4, 2}, // 0, 0, 0, 0
+        {4, 0, 4, 0}, // 4, 0, 8, 0
+        {4, 0, 8, 2}  // 8, 16, 8, 4
+    };
+
     printf("----board_full----\n");
     printf("Premier affichage\n");
     print_board(board_full);
     printf("Deuxieme affichage\n");
-    if (play_up(board_full)) {
+    if (play_down(board_full)) {
         spawn_tile(board_full);
         print_board(board_full);
     }else {
         printf("Aucun mouvement vers le haut\n");
     }
 
-    printf("----board_up----\n");
+    printf("----board_down----\n");
     printf("Premier affichage\n");
-    print_board(board_up);
+    print_board(board_down);
     printf("Deuxieme affichage\n");
-    if (play_up(board_up)) {
-        spawn_tile(board_up);
-        print_board(board_up);
+    if (play_down(board_down)) {
+        spawn_tile(board_down);
+        print_board(board_down);
     }else {
         printf("Aucun mouvement vers le haut\n");
     }
-
-    printf("----board_right----\n");
-    printf("Premier affichage\n");
-    print_board(board_right);
-    printf("Deuxieme affichage\n");
-    if (play_right(board_right)) {
-        spawn_tile(board_right);
-        print_board(board_right);
-    }else {
-        printf("Aucun mouvement vers le haut\n");
-    }
-
 
     //init_board(board);
     //spawn_tile(board);
