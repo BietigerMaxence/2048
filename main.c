@@ -7,6 +7,36 @@
 
 //--------------------------------------BOOL FUNCTIONS--------------------------------------
 
+//return true if the board can move
+bool can_move(int a_board[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+
+            //return true if if the tile equal 0
+            if (a_board[i][j] == 0) {
+                return true;
+            }
+
+            if (j < SIZE - 1) {
+                //return true if a tile at it's right are equal
+                if (a_board[i][j] == a_board[i][j+1]) {
+                    return true;
+                }
+            }
+
+            if (i < SIZE - 1) {
+                //return true if a tile and it below one are equal
+                if (a_board[i][j] == a_board[i+1][j]) {
+                    return true;
+                }
+            }
+        }
+    }
+    //return false if no more move is possible
+    return false;
+}
+
+
 //return "true" if boards are equal
 bool boards_are_equal(int a[SIZE][SIZE], int b[SIZE][SIZE]) {
     for (int i = 0; i < SIZE; i++) {
@@ -91,7 +121,7 @@ void copy_board(int source[SIZE][SIZE], int destination[SIZE][SIZE]) {
 //Move every element to the right
 void move_right(int a_board[SIZE][SIZE]) {
     for (int i = 0; i < SIZE; i++) {
-        int target_col = 3;
+        int target_col = SIZE - 1;
 
         for (int j = SIZE - 1; j > - 1; j--) {
             if (a_board[i][j] != 0) {
@@ -306,6 +336,15 @@ int main() {
     srand(time(NULL));
 
     int board[SIZE][SIZE];
+    /*
+    int board_test[SIZE][SIZE]={
+        {2, 4, 8, 16},
+        {4, 8, 16, 32},
+        {8, 16, 32, 64},
+        {16, 32, 64, 128}
+    };
+    */
+
     char direction;
 
 
@@ -315,7 +354,7 @@ int main() {
 
     print_board(board);
 
-    while (true) {
+    while (can_move(board)) {
         if (scanf(" %c", &direction) == 1) {// NOLINT(cert-err34-c)
             direction = tolower(direction);
             if (direction == 'z' || direction == 'q' || direction == 's' || direction == 'd') {
@@ -324,28 +363,28 @@ int main() {
                         if (play_up(board)) {
                             spawn_tile(board);
                             print_board(board);
-                            continue;
+                            break;
                         }else {
                             printf("No movement to the top\n");
-                            continue;
+                            break;
                         }
                     case 'q':
                         if (play_left(board)) {
                             spawn_tile(board);
                             print_board(board);
-                            continue;
+                            break;
                         }else {
                             printf("No movement to the left\n");
-                            continue;
+                            break;
                         }
                     case 's':
                         if (play_down(board)) {
                             spawn_tile(board);
                             print_board(board);
-                            continue;
+                            break;
                         }else {
                             printf("No movement to the bottom\n");
-                            continue;
+                            break;
                         }
                     case 'd':
                         if (play_right(board)) {
@@ -370,6 +409,6 @@ int main() {
             continue;
         }
     }
-
+    printf("Game Over!\n");
     return 0;
 }
